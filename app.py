@@ -39,10 +39,6 @@ def ping():
         time.sleep(300)  # 5 минут
 
 
-@bot.message_handler(func=lambda message: True)
-def handle_message(message):
-    print("Обрабатываю message: True")
-    bot.reply_to(message, 'Получено сообщение: ' + message.text)
 
 
 @bot.message_handler(commands=['start'])
@@ -57,6 +53,12 @@ def status(message):
     bot.reply_to(message, "Статус: активен\nТокен загружен из защищённого хранилища")
 
 
+@bot.message_handler(func=lambda message: True)
+def handle_message(message):
+    print("Обрабатываю message: True")
+    bot.reply_to(message, 'Получено сообщение: ' + message.text)
+
+
 @app.route('/' + TOKEN, methods=['POST'])
 def get_message():
     if request.headers.get('content-type') != 'application/json':
@@ -64,30 +66,19 @@ def get_message():
 
     try:
         json_data = request.get_json()
-        print(f"Raw JSON: {json_data}")  # Логируем сырые данные
-
-        # Проверяем структуру сообщения
-        if 'message' not in json_data:
-            print("Нет поля 'message' в JSON")
-            return 'ok', 200  # Возвращаем 200 для тестовых обновлений
+        print(f"Raw JSON: {json_data}")
 
         update = telebot.types.Update.de_json(json_data)
-        if not update:
-            print("Не удалось создать объект Update")
+        if not update or not hasattr(update, 'message'):
+            print("Пустое сообщение")
             return 'ok', 200
 
-        # Дополнительная проверка
-        if not update.message or not update.message.text:
-            print("Пустое сообщение или текст")
-            return 'ok', 200
+        # Принудительный тест обработчика
+        print("-- Тест обработчика --")
+        handle_message(update.message)  # <-- Важно!
 
-        print(f"Обрабатываем сообщение: {update.message.text}")  # Логируем текст
-        bot.send_message(891159727, "Принудительный ответ")
-        # Создаём объект Update вручную
-        update = telebot.types.Update.de_json(json_data)
-        print(f"Обрабатываем текст: {update.message.text}")
+        # Стандартная обработка
         bot.process_new_updates([update])
-
         return 'ok', 200
 
     except Exception as e:
