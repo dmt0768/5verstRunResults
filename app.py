@@ -55,6 +55,7 @@ def get_message():
         json_update = request.get_json()
         update = telebot.types.Update.de_json(json_update)
         bot.process_new_updates([update])
+        print(f"Получено обновление: {json_update}")
         return 'ok', 200
     return 'invalid content', 400
 
