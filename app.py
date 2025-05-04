@@ -46,7 +46,7 @@ def general_message_handler(message):
     try:
         bot.reply_to(message, 'Echo ' + message.text)
     except Exception as e:
-        print(f"Critical error: {str(e)}")
+        print(f"Critical error2: {str(e)}")
         return 'server error', 500
 
     DEBUG = True
@@ -81,6 +81,7 @@ def general_message_handler(message):
         input()
 
     bot.reply_to(message, answer)
+    return 'ok', 200
 
 
 @app.route('/' + TOKEN, methods=['POST'])
@@ -103,7 +104,7 @@ def get_message():
         return 'ok', 200
 
     except Exception as e:
-        print(f"Critical error: {str(e)}")
+        print(f"Critical error1: {str(e)}")
         return 'server error', 500
 
 
