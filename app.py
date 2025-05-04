@@ -82,7 +82,7 @@ def get_message():
             return 'ok', 200
 
         print(f"Обрабатываем сообщение: {update.message.text}")  # Логируем текст
-
+        bot.send_message(891159727, "Принудительный ответ")
         # Создаём объект Update вручную
         update = telebot.types.Update.de_json(json_data)
         print(f"Обрабатываем текст: {update.message.text}")
