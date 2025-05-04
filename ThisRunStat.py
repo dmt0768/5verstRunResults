@@ -33,9 +33,11 @@ class Participant:
 
 
 class Start:
-    participants_ = dict()
-    users_404 = 0
-    team = str()
+
+    def __init__(self):
+        self.participants_ = dict()
+        self.users_404 = 0
+        self.team = str()
 
     def add_participant(self, participant_id, participant: Participant):
         if participant_id not in self.participants_.keys():
