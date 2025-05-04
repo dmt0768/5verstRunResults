@@ -39,24 +39,10 @@ def ping():
         time.sleep(300)  # 5 минут
 
 
-
-
-@bot.message_handler(commands=['start'])
-def send_welcome(message):
-    print("Обрабатываю start")
-    bot.reply_to(message, "start")
-
-
-@bot.message_handler(commands=['status'])
-def status(message):
-    print("Обрабатываю status")
-    bot.reply_to(message, "Статус: активен\nТокен загружен из защищённого хранилища")
-
-
 @bot.message_handler(func=lambda message: True)
-def handle_message(message):
-    print("Обрабатываю message: True")
-    bot.reply_to(message, 'Получено сообщение: ' + message.text)
+def general_message_handler(message):
+    print("In general_message_handler")
+    bot.reply_to(message, 'Echo ' + message.text)
 
 
 @app.route('/' + TOKEN, methods=['POST'])
@@ -73,12 +59,9 @@ def get_message():
             print("Пустое сообщение")
             return 'ok', 200
 
-        # Принудительный тест обработчика
-        print("-- Тест обработчика --")
-        handle_message(update.message)  # <-- Важно!
+        # Принудительный запуск обработчика
+        general_message_handler(update.message)
 
-        # Стандартная обработка
-        bot.process_new_updates([update])
         return 'ok', 200
 
     except Exception as e:
