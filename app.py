@@ -63,7 +63,6 @@ def general_message_handler(message):
             PS = ProcessorOfStart(link)
         except PageNotFound:
             print('Страница не найдена. Перезапустите программу, проверьте ссылку и попробуйте ещё раз')
-            input()
             raise PageNotFound
 
         start = PS.process_start()
