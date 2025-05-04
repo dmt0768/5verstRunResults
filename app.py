@@ -81,7 +81,6 @@ def general_message_handler(message):
         input()
 
     bot.reply_to(message, answer)
-    return 'ok', 200
 
 
 @app.route('/' + TOKEN, methods=['POST'])
@@ -105,7 +104,7 @@ def get_message():
 
     except Exception as e:
         print(f"Critical error1: {str(e)}")
-        return 'server error', 500
+        return 'server error', 200
 
 
 @app.route('/setwebhook')
