@@ -108,11 +108,11 @@ class ProcessorOfStart:
         "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) "
                       "Chrome/58.0.3029.110 Safari/537.36 "
     }
-    start = Start()
 
     def __init__(self, url):
         self.url = url
         self.response = self.__get_url_response(url)
+        self.start = Start()
 
     def process_start(self):
         soup = BeautifulSoup(self.response.text, 'html.parser')
@@ -245,7 +245,7 @@ def print_reward_to_names(name_to_rewards: dict):
                 reward_to_names[reward].add(name)
 
     for reward in reward_to_names:
-        ans += reward + ': '
+        ans += '\n' + reward + ':\n'
         for name in sorted(reward_to_names[reward]):
             ans += name + '\n'
 
