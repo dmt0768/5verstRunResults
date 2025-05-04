@@ -78,7 +78,7 @@ def general_message_handler(message):
         bot.reply_to(message, answer)
         round_runs.clear()
         round_vols.clear()
-        rewards. clear()
+        rewards.clear()
     else:
         bot.reply_to(message, 'Неправильная ссылка! Проверьте ссылку и попробуйте ещё раз')
 
