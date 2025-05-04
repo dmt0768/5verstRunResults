@@ -49,7 +49,7 @@ def general_message_handler(message):
         print(f"Critical error2: {str(e)}")
         return 'server error', 500
 
-    DEBUG = True
+    DEBUG = False
     answer = str()
 
     if DEBUG:
@@ -63,9 +63,8 @@ def general_message_handler(message):
         try:
             PS = ProcessorOfStart(link)
         except PageNotFound:
-            print('Страница не найдена. Перезапустите программу, проверьте ссылку и попробуйте ещё раз')
-            raise PageNotFound
-
+            bot.reply_to(message, 'Страница не найдена. Проверьте ссылку и попробуйте ещё раз')
+            return
         start = PS.process_start()
         [round_runs, round_vols] = start.get_round_clubs_runs_and_vols()
         answer += 'Всего участников: ' + str(start.get_participants_number()) + '\n' + '\n'
@@ -76,11 +75,11 @@ def general_message_handler(message):
         rewards = start.get_rewards()
         answer += "Награды: \n" + print_reward_to_names(rewards) + '\n' + '\n'
         print(answer)
+        bot.reply_to(message, answer)
     else:
-        print('Неправильная ссылка! Перезапустите программу, проверьте ссылку и попробуйте ещё раз')
-        input()
+        bot.reply_to(message,'Неправильная ссылка! Проверьте ссылку и попробуйте ещё раз')
 
-    bot.reply_to(message, answer)
+
 
 
 @app.route('/' + TOKEN, methods=['POST'])
