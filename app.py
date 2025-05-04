@@ -48,7 +48,7 @@ def handle_message(message):
 @bot.message_handler(commands=['start'])
 def send_welcome(message):
     print("Обрабатываю start")
-    bot.reply_to(message, "Бот работает в безопасном режиме!")
+    bot.reply_to(message, "start")
 
 
 @bot.message_handler(commands=['status'])
@@ -82,7 +82,13 @@ def get_message():
             return 'ok', 200
 
         print(f"Обрабатываем сообщение: {update.message.text}")  # Логируем текст
-        bot.process_new_updates([update])
+
+        # Создаём объект Update вручную
+        update = telebot.types.Update.de_json(json_data)
+        with bot:
+            print(f"Обрабатываем текст: {update.message.text}")
+            bot.process_new_updates([update])
+
         return 'ok', 200
 
     except Exception as e:
