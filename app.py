@@ -51,13 +51,35 @@ def status(message):
 
 @app.route('/' + TOKEN, methods=['POST'])
 def get_message():
-    if request.headers.get('content-type') == 'application/json':
-        json_update = request.get_json()
-        update = telebot.types.Update.de_json(json_update)
+    if request.headers.get('content-type') != 'application/json':
+        return 'invalid content', 400
+
+    try:
+        json_data = request.get_json()
+        print(f"Raw JSON: {json_data}")  # Логируем сырые данные
+
+        # Проверяем структуру сообщения
+        if 'message' not in json_data:
+            print("Нет поля 'message' в JSON")
+            return 'ok', 200  # Возвращаем 200 для тестовых обновлений
+
+        update = telebot.types.Update.de_json(json_data)
+        if not update:
+            print("Не удалось создать объект Update")
+            return 'ok', 200
+
+        # Дополнительная проверка
+        if not update.message or not update.message.text:
+            print("Пустое сообщение или текст")
+            return 'ok', 200
+
+        print(f"Обрабатываем сообщение: {update.message.text}")  # Логируем текст
         bot.process_new_updates([update])
-        print(f"Получено обновление: {json_update}")
         return 'ok', 200
-    return 'invalid content', 400
+
+    except Exception as e:
+        print(f"Critical error: {str(e)}")
+        return 'server error', 500
 
 
 @app.route('/setwebhook')
