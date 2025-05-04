@@ -42,7 +42,11 @@ def ping():
 @bot.message_handler(func=lambda message: True)
 def general_message_handler(message):
     print("In general_message_handler")
-    bot.reply_to(message, 'Echo ' + message.text)
+    try:
+        bot.reply_to(message, 'Echo ' + message.text)
+    except Exception as e:
+        print(f"Critical error: {str(e)}")
+        return 'server error', 500
 
 
 @app.route('/' + TOKEN, methods=['POST'])
