@@ -85,9 +85,8 @@ def get_message():
 
         # Создаём объект Update вручную
         update = telebot.types.Update.de_json(json_data)
-        with bot:
-            print(f"Обрабатываем текст: {update.message.text}")
-            bot.process_new_updates([update])
+        print(f"Обрабатываем текст: {update.message.text}")
+        bot.process_new_updates([update])
 
         return 'ok', 200
 
