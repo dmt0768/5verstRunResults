@@ -5,6 +5,7 @@ import requests
 import time
 import os
 from pathlib import Path
+from ThisRunStat import *
 
 app = Flask(__name__)
 
@@ -47,6 +48,47 @@ def general_message_handler(message):
     except Exception as e:
         print(f"Critical error: {str(e)}")
         return 'server error', 500
+
+    DEBUG = True
+
+    if DEBUG:
+        link = 'https://5verst.ru/parkpobedy/results/latest/'
+        link_valid = is_valid_result_url(link)
+    else:
+        link = input('Скопируйте ссылку: \n')
+        link_valid = is_valid_result_url(link)
+
+    if link_valid:
+        try:
+            PS = ProcessorOfStart(link)
+        except PageNotFound:
+            print('Страница не найдена. Перезапустите программу, проверьте ссылку и попробуйте ещё раз')
+            input()
+            raise PageNotFound
+
+        start = PS.process_start()
+        [round_runs, round_vols] = start.get_round_clubs_runs_and_vols()
+        print()
+        print('Всего участников:', start.get_participants_number())
+        print('Из них неизвестных --', start.get_unknown_participants_number())
+        print()
+        print(start.get_team_text())
+        print()
+        print("Круглые волонтёрства:")
+        print_round_clubs(round_vols)
+        print()
+        print("Круглые финиши:")
+        print_round_clubs(round_runs)
+        print()
+        print('Награды')
+        print()
+        rewards = start.get_rewards()
+        #print_name_to_rewards(rewards)
+        print_reward_to_names(rewards)
+        print()
+    else:
+        print('Неправильная ссылка! Перезапустите программу, проверьте ссылку и попробуйте ещё раз')
+
 
 
 @app.route('/' + TOKEN, methods=['POST'])
