@@ -212,27 +212,28 @@ def is_valid_result_url(url):
 
 
 def print_round_clubs(round_clubs):
+    ans = ""
     for round_number in sorted(round_clubs.keys()):
         participant: Participant
         for participant in sorted(round_clubs[round_number]):
-            print(str(round_number) + ': ', end='')
-            print(participant.name)
+            ans += str(round_number) + ': ' + participant.name + '\n'
+    return ans
 
 
 def print_name_to_rewards(rewards: dict):
-    ans = str()
+    ans = ""
     for name in rewards:
         ans += name + ':\n'
         for reward in sorted(rewards[name]):
             ans += reward + '\n'
-        print(ans)
 
-        ans = str()
+    return ans
 
 
 def print_reward_to_names(name_to_rewards: dict):
     all_rewards = set()
     reward_to_names = dict()
+    ans = ""
     for rewards_set in name_to_rewards.values():
         all_rewards.update(rewards_set)
     for reward in all_rewards:
@@ -242,10 +243,11 @@ def print_reward_to_names(name_to_rewards: dict):
                 reward_to_names[reward].add(name)
 
     for reward in reward_to_names:
-        print(reward, ': ', sep='')
+        ans += reward + ': '
         for name in sorted(reward_to_names[reward]):
-            print(name)
-        print()
+            ans += name + '\n'
+
+    return ans
 
 
 if __name__ == '__main__':
@@ -268,25 +270,15 @@ if __name__ == '__main__':
 
         start = PS.process_start()
         [round_runs, round_vols] = start.get_round_clubs_runs_and_vols()
-        print()
-        print('Всего участников:', start.get_participants_number())
-        print('Из них неизвестных --', start.get_unknown_participants_number())
-        print()
-        print(start.get_team_text())
-        print()
-        print("Круглые волонтёрства:")
-        print_round_clubs(round_vols)
-        print()
-        print("Круглые финиши:")
-        print_round_clubs(round_runs)
-        print()
-        print('Награды')
-        print()
+        message = str()
+        message += 'Всего участников: ' + str(start.get_participants_number()) + '\n' + '\n'
+        message += 'Из них неизвестных -- ' + str(start.get_unknown_participants_number()) + '\n' + '\n'
+        message += start.get_team_text() + '\n' + '\n'
+        message += "Круглые волонтёрства: \n" + print_round_clubs(round_vols) + '\n' + '\n'
+        message += "Круглые финиши: \n" + print_round_clubs(round_runs) + '\n' + '\n'
         rewards = start.get_rewards()
-        #print_name_to_rewards(rewards)
-        print_reward_to_names(rewards)
-        print()
-        input()
+        message += "Награды: \n" + print_reward_to_names(rewards) + '\n' + '\n'
+        print(message)
     else:
         print('Неправильная ссылка! Перезапустите программу, проверьте ссылку и попробуйте ещё раз')
         input()

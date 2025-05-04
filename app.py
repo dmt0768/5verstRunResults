@@ -50,12 +50,13 @@ def general_message_handler(message):
         return 'server error', 500
 
     DEBUG = True
+    answer = str()
 
     if DEBUG:
         link = 'https://5verst.ru/parkpobedy/results/latest/'
         link_valid = is_valid_result_url(link)
     else:
-        link = input('Скопируйте ссылку: \n')
+        link = message.text
         link_valid = is_valid_result_url(link)
 
     if link_valid:
@@ -67,27 +68,19 @@ def general_message_handler(message):
 
         start = PS.process_start()
         [round_runs, round_vols] = start.get_round_clubs_runs_and_vols()
-        print()
-        print('Всего участников:', start.get_participants_number())
-        print('Из них неизвестных --', start.get_unknown_participants_number())
-        print()
-        print(start.get_team_text())
-        print()
-        print("Круглые волонтёрства:")
-        print_round_clubs(round_vols)
-        print()
-        print("Круглые финиши:")
-        print_round_clubs(round_runs)
-        print()
-        print('Награды')
-        print()
+        answer += 'Всего участников: ' + str(start.get_participants_number()) + '\n' + '\n'
+        answer += 'Из них неизвестных -- ' + str(start.get_unknown_participants_number()) + '\n' + '\n'
+        answer += start.get_team_text() + '\n' + '\n'
+        answer += "Круглые волонтёрства: \n" + print_round_clubs(round_vols) + '\n' + '\n'
+        answer += "Круглые финиши: \n" + print_round_clubs(round_runs) + '\n' + '\n'
         rewards = start.get_rewards()
-        #print_name_to_rewards(rewards)
-        print_reward_to_names(rewards)
-        print()
+        answer += "Награды: \n" + print_reward_to_names(rewards) + '\n' + '\n'
+        print(answer)
     else:
         print('Неправильная ссылка! Перезапустите программу, проверьте ссылку и попробуйте ещё раз')
+        input()
 
+    bot.reply_to(message, answer)
 
 
 @app.route('/' + TOKEN, methods=['POST'])
