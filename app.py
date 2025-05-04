@@ -39,13 +39,21 @@ def ping():
         time.sleep(300)  # 5 минут
 
 
+@bot.message_handler(func=lambda message: True)
+def handle_message(message):
+    print("Обрабатываю message: True")
+    bot.reply_to(message, 'Получено сообщение: ' + message.text)
+
+
 @bot.message_handler(commands=['start'])
 def send_welcome(message):
+    print("Обрабатываю start")
     bot.reply_to(message, "Бот работает в безопасном режиме!")
 
 
 @bot.message_handler(commands=['status'])
 def status(message):
+    print("Обрабатываю status")
     bot.reply_to(message, "Статус: активен\nТокен загружен из защищённого хранилища")
 
 
