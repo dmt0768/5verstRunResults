@@ -76,6 +76,9 @@ def general_message_handler(message):
         answer += "Награды: \n" + print_reward_to_names(rewards) + '\n' + '\n'
         # print(answer)
         bot.reply_to(message, answer)
+        round_runs.clear()
+        round_vols.clear()
+        rewards. clear()
     else:
         bot.reply_to(message, 'Неправильная ссылка! Проверьте ссылку и попробуйте ещё раз')
 
