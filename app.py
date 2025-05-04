@@ -44,7 +44,7 @@ def ping():
 def general_message_handler(message):
     print("In general_message_handler")
     try:
-        bot.reply_to(message, 'Echo ' + message.text)
+        bot.reply_to(message, 'Запрос получен. Выполняю!')
     except Exception as e:
         print(f"Critical error2: {str(e)}")
         return 'server error', 500
@@ -74,10 +74,10 @@ def general_message_handler(message):
         answer += "Круглые финиши: \n" + print_round_clubs(round_runs) + '\n' + '\n'
         rewards = start.get_rewards()
         answer += "Награды: \n" + print_reward_to_names(rewards) + '\n' + '\n'
-        print(answer)
+        # print(answer)
         bot.reply_to(message, answer)
     else:
-        bot.reply_to(message,'Неправильная ссылка! Проверьте ссылку и попробуйте ещё раз')
+        bot.reply_to(message, 'Неправильная ссылка! Проверьте ссылку и попробуйте ещё раз')
 
 
 
@@ -89,7 +89,7 @@ def get_message():
 
     try:
         json_data = request.get_json()
-        print(f"Raw JSON: {json_data}")
+        # print(f"Raw JSON: {json_data}")
 
         update = telebot.types.Update.de_json(json_data)
         if not update or not hasattr(update, 'message'):
@@ -111,7 +111,7 @@ def set_webhook():
     url = f'{RENDER_URL}/{TOKEN}'
     bot.remove_webhook()
     bot.set_webhook(url=url)
-    return f'Webhook установлен на {url}', 200
+    return 'ok', 200
 
 
 @app.route('/')
