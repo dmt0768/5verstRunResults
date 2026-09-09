@@ -134,7 +134,7 @@ class ProcessorOfStart:
             try:
                 user_id = self.__userlink_to_userid(row.find("a")['href'])
                 name = row.find("a").string
-                runs, vols = self.__parese_userstat(row.find('div', 'user-stat').findAll('span'))
+                runs, vols = self.__parese_userstat(row.find('div', 'user-stat').find_all('span'))
                 rewards = self.__parse_rewards(row.find('div', {'class': 'table-achievments'}))
                 runner = True
                 self.start.add_participant(user_id, Participant(name=name,
@@ -150,7 +150,7 @@ class ProcessorOfStart:
         for row in volunteer_table.find_all("tr"):
             user_id = self.__userlink_to_userid(row.find("a")['href'])
             name = row.find("a").string
-            runs, vols = self.__parese_userstat(row.find('div', 'user-stat').findAll('span'))
+            runs, vols = self.__parese_userstat(row.find('div', 'user-stat').find_all('span'))
             rewards = self.__parse_rewards(row.find('div', {'class': 'volunteer__role'}))
             role = [row.find('div', {'class': 'volunteer__role'}).find('span', title=None).text]
             self.start.add_participant(user_id, Participant(name=name,
@@ -276,8 +276,8 @@ if __name__ == '__main__':
         message += 'Всего участников: ' + str(start.get_participants_number()) + '\n' + '\n'
         message += 'Из них неизвестных -- ' + str(start.get_unknown_participants_number()) + '\n' + '\n'
         message += start.get_team_text() + '\n' + '\n'
-        message += "Круглые волонтёрства: \n" + print_round_clubs(round_vols) + '\n' + '\n'
-        message += "Круглые финиши: \n" + print_round_clubs(round_runs) + '\n' + '\n'
+        message += "Юбилейные волонтёрства: \n" + print_round_clubs(round_vols) + '\n' + '\n'
+        message += "Юбилейные финиши: \n" + print_round_clubs(round_runs) + '\n' + '\n'
         rewards = start.get_rewards()
         message += "Награды: \n" + print_reward_to_names(rewards) + '\n' + '\n'
         print(message)
