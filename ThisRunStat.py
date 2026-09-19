@@ -102,6 +102,14 @@ class Start:
     def get_team_text(self):
         return self.team
 
+    def get_runners_number(self):
+        return sum(1 for participant in self.participants_.values()
+                   if participant.runner)
+
+    def get_volunteers_number(self):
+        return sum(1 for participant in self.participants_.values()
+                   if participant.roles)
+
 
 class ProcessorOfStart:
     headers = {
@@ -272,15 +280,17 @@ if __name__ == '__main__':
 
         start = PS.process_start()
         [round_runs, round_vols] = start.get_round_clubs_runs_and_vols()
-        message = str()
-        message += 'Всего участников: ' + str(start.get_participants_number()) + '\n' + '\n'
-        message += 'Из них неизвестных -- ' + str(start.get_unknown_participants_number()) + '\n' + '\n'
-        message += start.get_team_text() + '\n' + '\n'
-        message += "Юбилейные волонтёрства: \n" + print_round_clubs(round_vols) + '\n' + '\n'
-        message += "Юбилейные финиши: \n" + print_round_clubs(round_runs) + '\n' + '\n'
+        answer = str()
+        answer += 'Всего участников: ' + str(start.get_participants_number()) + '\n'
+        answer += 'Всего бегунов: ' + str(start.get_runners_number()) + '\n'
+        answer += 'Всего волонтёров: ' + str(start.get_volunteers_number()) + '\n'
+        answer += 'Из них неизвестных: ' + str(start.get_unknown_participants_number()) + '\n' + '\n'
+        answer += start.get_team_text() + '\n' + '\n'
+        answer += "Юбилейные волонтёрства: \n" + print_round_clubs(round_vols) + '\n' + '\n'
+        answer += "Юбилейные финиши: \n" + print_round_clubs(round_runs) + '\n' + '\n'
         rewards = start.get_rewards()
-        message += "Награды: \n" + print_reward_to_names(rewards) + '\n' + '\n'
-        print(message)
+        answer += "Награды: \n" + print_reward_to_names(rewards) + '\n' + '\n'
+        print(answer)
     else:
         print('Неправильная ссылка! Перезапустите программу, проверьте ссылку и попробуйте ещё раз')
         input()
