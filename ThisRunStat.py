@@ -20,13 +20,14 @@ class DictOfList(dict):
 
 
 class Participant:
-    def __init__(self, name, runs, vols, rewards: set, roles: list, runner=False):
+    def __init__(self, name, runs, vols, rewards: set, roles: list, club=None, runner=False):
         self.name = name
         self.runner = runner
         self.roles = roles
         self.runs = runs
         self.vols = vols
         self.rewards = rewards
+        self.club = club
 
     def __gt__(self, other):
         return self.name > other.name
@@ -51,7 +52,8 @@ class Start:
 
         if (self.participants_[participant_id].name != participant.name or
                 self.participants_[participant_id].runs != participant.runs or
-                self.participants_[participant_id].vols != participant.vols):
+                self.participants_[participant_id].vols != participant.vols or
+                self.participants_[participant_id].club != participant.club):
             raise AttributeError("Произошло нечто ужасное. Похоже, что программа всё напутала...")
 
         if participant.roles is not None:
@@ -110,6 +112,17 @@ class Start:
         return sum(1 for participant in self.participants_.values()
                    if participant.roles)
 
+    def get_clubs_set(self):
+        clubs = set()
+        for participant in self.participants_.values():
+            if None is not participant.club:
+                clubs.add(participant.club)
+
+        if clubs:
+            clubs = sorted(clubs,
+                           key=lambda x: (not any('\u0400' <= c <= '\u04FF' for c in x), x.lower()))
+
+        return clubs
 
 class ProcessorOfStart:
     headers = {
@@ -145,11 +158,13 @@ class ProcessorOfStart:
                 runs, vols = self.__parese_userstat(row.find('div', 'user-stat').find_all('span'))
                 rewards = self.__parse_rewards(row.find('div', {'class': 'table-achievments'}))
                 runner = True
+                club = self.__parse_club(row)
                 self.start.add_participant(user_id, Participant(name=name,
                                                                 runs=runs,
                                                                 vols=vols,
                                                                 rewards=rewards,
                                                                 roles=[],
+                                                                club=club,
                                                                 runner=runner))
             except (AttributeError, TypeError):
                 self.start.users_404 += 1
@@ -161,10 +176,12 @@ class ProcessorOfStart:
             runs, vols = self.__parese_userstat(row.find('div', 'user-stat').find_all('span'))
             rewards = self.__parse_rewards(row.find('div', {'class': 'volunteer__role'}))
             role = [row.find('div', {'class': 'volunteer__role'}).find('span', title=None).text]
+            club = self.__parse_club(row)
             self.start.add_participant(user_id, Participant(name=name,
                                                             runs=runs,
                                                             vols=vols,
                                                             rewards=rewards,
+                                                            club=club,
                                                             roles=role))
         return
 
@@ -209,6 +226,17 @@ class ProcessorOfStart:
 
         return rewards
 
+    @staticmethod
+    def __parse_club(row):
+        for link in row.find_all('a', href=True):
+            if '/clubs/' in link['href']:
+                if '' != link.string:
+                    return str(link.string).strip()
+                else:
+                    return None
+
+        return None
+
 
 def is_valid_result_url(url):
     try:
@@ -220,6 +248,16 @@ def is_valid_result_url(url):
     except ValueError:
         return False
 
+def print_run_clubs(run_clubs: set):
+    ans = ""
+    if run_clubs:
+        for club in run_clubs:
+            ans += str(club) + ', '
+
+        ans = ans[:-2]
+        ans += '\n\n'
+
+    return ans
 
 def print_round_clubs(round_clubs):
     ans = ""
@@ -287,6 +325,7 @@ if __name__ == '__main__':
         answer += 'Всего волонтёров: ' + str(start.get_volunteers_number()) + '\n'
         answer += 'Всего неизвестных: ' + str(start.get_unknown_participants_number()) + '\n' + '\n'
         answer += start.get_team_text() + '\n' + '\n'
+        answer += 'Беговые клубы на сегодняшнем старте: \n' + print_run_clubs(start.get_clubs_set())
         answer += "Юбилейные волонтёрства: \n" + print_round_clubs(round_vols) + '\n' + '\n'
         answer += "Юбилейные финиши: \n" + print_round_clubs(round_runs) + '\n' + '\n'
         rewards = start.get_rewards()
