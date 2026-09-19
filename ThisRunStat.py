@@ -253,7 +253,8 @@ def print_reward_to_names(name_to_rewards: dict):
                 reward_to_names[reward].add(name)
 
     for reward in reward_to_names:
-        ans += '\n' + reward + ':\n'
+        reward_cleared = str(reward).replace('!','',1)
+        ans += '\n' + reward_cleared + ':\n'
         for name in sorted(reward_to_names[reward]):
             ans += name + '\n'
 
@@ -264,7 +265,7 @@ if __name__ == '__main__':
     DEBUG = True
 
     if DEBUG:
-        link = 'https://5verst.ru/parkpobedy/results/latest/'
+        link = 'https://5verst.ru/filatovlug/results/latest/'
         link_valid = is_valid_result_url(link)
     else:
         link = input('Скопируйте ссылку: \n')
@@ -284,7 +285,7 @@ if __name__ == '__main__':
         answer += 'Всего участников: ' + str(start.get_participants_number()) + '\n'
         answer += 'Всего бегунов: ' + str(start.get_runners_number()) + '\n'
         answer += 'Всего волонтёров: ' + str(start.get_volunteers_number()) + '\n'
-        answer += 'Из них неизвестных: ' + str(start.get_unknown_participants_number()) + '\n' + '\n'
+        answer += 'Всего неизвестных: ' + str(start.get_unknown_participants_number()) + '\n' + '\n'
         answer += start.get_team_text() + '\n' + '\n'
         answer += "Юбилейные волонтёрства: \n" + print_round_clubs(round_vols) + '\n' + '\n'
         answer += "Юбилейные финиши: \n" + print_round_clubs(round_runs) + '\n' + '\n'

@@ -70,7 +70,7 @@ def general_message_handler(message):
         answer += 'Всего участников: ' + str(start.get_participants_number()) + '\n'
         answer += 'Всего бегунов: ' + str(start.get_runners_number()) + '\n'
         answer += 'Всего волонтёров: ' + str(start.get_volunteers_number()) + '\n'
-        answer += 'Из них неизвестных: ' + str(start.get_unknown_participants_number()) + '\n' + '\n'
+        answer += 'Всего неизвестных: ' + str(start.get_unknown_participants_number()) + '\n' + '\n'
         answer += start.get_team_text() + '\n' + '\n'
         answer += "Юбилейные волонтёрства: \n" + print_round_clubs(round_vols) + '\n' + '\n'
         answer += "Юбилейные финиши: \n" + print_round_clubs(round_runs) + '\n' + '\n'
