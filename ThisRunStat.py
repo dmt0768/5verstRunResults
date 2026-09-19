@@ -115,7 +115,7 @@ class Start:
     def get_clubs_set(self):
         clubs = set()
         for participant in self.participants_.values():
-            if None is not participant.club:
+            if 'None' != participant.club:
                 clubs.add(participant.club)
 
         if clubs:
